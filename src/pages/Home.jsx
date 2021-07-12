@@ -8,7 +8,7 @@ const Home = ({
     items,
     onAddToCart,
     onAddToFavorite}) => {
-
+ 
 
     return (
         <div className="content p-4 mb-5">
@@ -24,14 +24,12 @@ const Home = ({
             <div className="sneakers d-flex flex-wrap">
                 {items
                     .filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
-                    .map((item, index) => (
-                        <Card
-                            key={index}
-                            title={item.title}
-                            imgUrl={item.imgUrl}
-                            price={item.price}
+                    .map((item) => (
+                        <Card  
+                            key={item.id}                          
                             onPlus={(obj) => onAddToCart(obj)} 
-                            onFavorite={(obj) => onAddToFavorite(obj)} />
+                            onFavorite={(obj) => onAddToFavorite(obj)}
+                            {...item} />
                     ))}
             </div>
         </div>

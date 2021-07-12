@@ -7,11 +7,13 @@ const Drawer = ({ onClose, onRemove, items = [] }) => {
                         Корзина
                         <img src="/img/btn-remove.svg" alt="remove" className="removeBtn" onClick={onClose} />
                     </h2>
+               
                     {
+                        
                         items.length > 0 ? (
                             items.map((obj) => (
-                                <div className="items">
-                                    <div className="cartItem d-flex align-items-center mb-3" >
+                                <div key={obj.id} className="items">
+                                    <div className="cartItem d-flex align-items-center justify-content-between mb-3 " >
                                         <img className="cartItemImg me-3" src={obj.imgUrl} width={70} height={70} alt="skeakers" />
                                         <div>
                                             <p>{obj.title}</p>

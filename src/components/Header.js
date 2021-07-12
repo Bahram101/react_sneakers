@@ -22,9 +22,12 @@ const Header = ({ onClickCart }) => {
                         <img src="/img/heart.svg" width={18} height={18} alt="Закладки" />
                     </li>
                 </Link>
-                <li>
-                    <img src="/img/user.svg" width={18} height={18} alt="Профиль" />
-                </li>
+                <Link to="/orders">
+                    <li>
+                        <img src="/img/user.svg" width={18} height={18} alt="Профиль" />
+                    </li>
+                </Link>
+
             </ul>
         </header>
     )
