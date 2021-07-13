@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 import Orders from './pages/Orders';
 import axios from 'axios';
+import AppContext from './context';
 
 
 const App = () => {
@@ -15,80 +16,94 @@ const App = () => {
 	const [favorites, setFavorites] = useState([]);
 	const [cartOpened, setCartOpened] = useState(false);
 	const [searchValue, setSearchValue] = useState('');
+	const [isLoading, setIsLoading] = useState(true);
+
+	const baseUrl = 'http://localhost:3002';
 
 	React.useEffect(() => {
+		async function fetchData() {
+			const cartResponse = await axios.get(`${baseUrl}/cart`)
+			const favoritesResponse = await axios.get(`${baseUrl}/favorites`)
+			const itemsResponse = await axios.get(`${baseUrl}/products`)
 
-		axios.get("http://localhost:3007/products").then((res) => {
-			setItems(res.data)
-		})
-		axios.get('http://localhost:3007/cart').then((res) => {
-			setCartItems(res.data)
-		})
-		axios.get('http://localhost:3007/favorites').then((res) => {
-			setFavorites(res.data)
-		})
+			setIsLoading(false);
+
+			setCartItems(cartResponse.data);
+			setFavorites(favoritesResponse.data);
+			setItems(itemsResponse.data);
+		}
+		fetchData();
 	}, [])
 
 
 	const onAddToCart = (obj) => {
 		if (cartItems.find((cartItem) => Number(cartItem.id) === Number(obj.id))) {
-			axios.delete(`http://localhost:3007/cart/${obj.id}`)
+			axios.delete(`${baseUrl}/cart/${obj.id}`)
 			setCartItems((prev) => prev.filter((item) => Number(item.id) !== Number(obj.id)))
 		} else {
-			axios.post('http://localhost:3007/cart', obj)
+			axios.post(`${baseUrl}/cart`, obj)
 			setCartItems((prev) => [...prev, obj])
 		}
 	}
 
 	const onAddToFavorite = (obj) => {
 		if (favorites.find((favObj) => Number(favObj.id) === Number(obj.id))) {
-			axios.delete(`http://localhost:3007/favorites/${obj.id}`)
-			setFavorites((prev)=> prev.filter((item)=> Number(item.id) !== Number(obj.id)))
+			axios.delete(`${baseUrl}/favorites/${obj.id}`)
+			setFavorites((prev) => prev.filter((item) => Number(item.id) !== Number(obj.id)))
 		} else {
-			axios.post('http://localhost:3007/favorites', obj)
+			axios.post(`${baseUrl}/favorites`, obj)
 			setFavorites((prev) => [...prev, obj])
 		}
 
 	}
 
-
 	const onRemoveItem = (id) => {
-		axios.delete(`http://localhost:3007/cart/${id}`)
+		axios.delete(`${baseUrl}/cart/${id}`)
 		setCartItems((prev) => prev.filter(item => item.id !== id))
 	}
 
-
 	const onChangeSearchInput = (e) => {
 		setSearchValue(e.target.value)
-	}	
+	}
+
+	const isItemAdded = (id) =>{
+		return cartItems.some((obj) => Number(obj.id) === Number(id))
+	}
+
 
 
 	return (
-		<div className="wrapper">
+		<AppContext.Provider value={{ items, cartItems, favorites, onAddToFavorite, isItemAdded, setCartOpened }}>
+			<div className="wrapper">
 
-			{cartOpened && <Drawer items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveItem} />}
+				{cartOpened && <Drawer items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveItem} />}
 
-			<Header onClickCart={() => setCartOpened(true)} />
+				<Header onClickCart={() => setCartOpened(true)} />
 
-			<Route exact path="/">
-				<Home
-					searchValue={searchValue}
-					onChangeSearchInput={onChangeSearchInput}
-					setSearchValue={setSearchValue}
-					items={items}
-					onAddToCart={onAddToCart}
-					onAddToFavorite={onAddToFavorite}
-				/>
-			</Route>
+				<Route exact path="/">
+					<Home
+						searchValue={searchValue}
+						cartItems={cartItems}
+						onChangeSearchInput={onChangeSearchInput}
+						setSearchValue={setSearchValue}
+						items={items}
+						favorites={favorites}
+						onAddToCart={onAddToCart}
+						onAddToFavorite={onAddToFavorite}
+						isLoading={isLoading}
+					/>
+				</Route>
 
-			<Route path="/favorites">
-				<Favorites items={favorites} onAddToFavorite={onAddToFavorite} />
-			</Route>
+				<Route path="/favorites">
+					<Favorites />
+				</Route>
 
-			<Route path="/orders">
-				<Orders items={cartItems} />
-			</Route>
-		</div>
+				<Route path="/orders">
+					<Orders items={cartItems} />
+				</Route>
+			</div>
+
+		</AppContext.Provider>
 	)
 }
 
