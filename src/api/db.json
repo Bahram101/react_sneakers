@@ -4,51 +4,67 @@
       "id": 1,
       "title": "Nike Blazer Mid Suede",
       "imgUrl": "/img/sneakers/1.jpg",
-      "price": 12999
+      "price": 5000
     },
     {
       "id": 2,
       "title": "Adidas Blazer Mid Suede2",
       "imgUrl": "/img/sneakers/2.jpg",
-      "price": 11999
+      "price": 4500
     },
     {
       "id": 3,
       "title": "Nike2 Blazer2 Mid Suede3",
       "imgUrl": "/img/sneakers/3.jpg",
-      "price": 10999
+      "price": 7300
     },
     {
       "id": 4,
       "title": "Adisad Blazer2 Mid Suede4",
       "imgUrl": "/img/sneakers/4.jpg",
-      "price": 99994
+      "price": 6500
     },
     {
       "id": 5,
       "title": "Kari Blazer33 Mid Suede5",
       "imgUrl": "/img/sneakers/5.jpg",
-      "price": 56992
+      "price": 4500
     },
     {
       "id": 6,
       "title": "Nike Blazer234 Mid Suede6",
       "imgUrl": "/img/sneakers/6.jpg",
-      "price": 78933
+      "price": 4800
     },
     {
       "id": 7,
       "title": "Nike Blazer Mid Suede7",
       "imgUrl": "/img/sneakers/7.jpg",
-      "price": 37111
+      "price": 5700
     },
     {
       "id": 8,
       "title": "Nike Blazer Sid Suede8",
       "imgUrl": "/img/sneakers/7.jpg",
-      "price": 37111
+      "price": 10000
     }
   ],
   "cart": [],
-  "favorites": []
+  "favorites": [],
+  "orders": [
+    [
+      {
+        "id": 2,
+        "imgUrl": "/img/sneakers/2.jpg",
+        "title": "Adidas Blazer Mid Suede2",
+        "price": 4500
+      },
+      {
+        "id": 6,
+        "imgUrl": "/img/sneakers/6.jpg",
+        "title": "Nike Blazer234 Mid Suede6",
+        "price": 4800
+      }
+    ]
+  ]
 }

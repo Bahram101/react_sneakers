@@ -1,12 +1,29 @@
 import React from "react";
 import Info from "./Info";
+import axios from "axios";
+import { useCart } from "../hooks/useCart";
 
 const Drawer = ({ onClose, onRemove, items = [] }) => {
 
+    const baseUrl = 'http://localhost:3002';
+
+    const { cartItems, setCartItems, totalPrice} = useCart()
     const [isOrderComplete, setIsOrderComplete] = React.useState(false)
 
-    const onClickOrder = () => {
-        setIsOrderComplete(true)
+    const onClickOrder = async () => {
+        try {
+            axios.post(`${baseUrl}/orders`, cartItems)
+            setIsOrderComplete(true)
+            setCartItems([])
+
+            for (let i = 0; i < cartItems.length; i++) {
+                const item = cartItems[i];
+                await axios.delete(`${baseUrl}/cart/${item.id}`);
+            }
+        } catch (error) {
+            alert('ОШИБКА')
+        }
+
     }
 
     return (
@@ -22,7 +39,7 @@ const Drawer = ({ onClose, onRemove, items = [] }) => {
                             {items.map((obj) => (
                                 <div key={obj.id} className="cartItem d-flex align-items-center justify-content-between mb-20">
                                     <div className="cartItemImg">
-                                        <img src={obj.imgUrl} />
+                                        <img src={obj.imgUrl} alt="sneakers" />
                                     </div>
 
                                     <div className="mr-20 flex">
@@ -43,12 +60,12 @@ const Drawer = ({ onClose, onRemove, items = [] }) => {
                                 <li>
                                     <span>Итого:</span>
                                     <div></div>
-                                    <b>21 498 руб. </b>
+                                    <b>{totalPrice} руб. </b>
                                 </li>
                                 <li>
                                     <span>Налог 5%:</span>
                                     <div></div>
-                                    <b>1074 руб. </b>
+                                    <b>{totalPrice * 5 / 100} руб. </b>
                                 </li>
                             </ul>
                             <button onClick={onClickOrder} className="greenButton">
@@ -58,13 +75,13 @@ const Drawer = ({ onClose, onRemove, items = [] }) => {
                     </div>
                 ) : (
                     <Info
-                    title={isOrderComplete ? 'Заказ оформлен!' : 'Корзина пустая'}
-                    description={
-                      isOrderComplete
-                        ? `Ваш заказ #${2} скоро будет передан курьерской доставке`
-                        : 'Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.'
-                    }
-                    image={isOrderComplete ? '/img/complete-order.jpg' : '/img/empty-cart.jpg'}
+                        title={isOrderComplete ? 'Заказ оформлен!' : 'Корзина пустая'}
+                        description={
+                            isOrderComplete
+                                ? `Ваш заказ #${2} скоро будет передан курьерской доставке`
+                                : 'Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.'
+                        }
+                        image={isOrderComplete ? '/img/complete-order.jpg' : null}
                     />
                 )}
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import Header from './components/Header';
 import Drawer from './components/Drawer';
@@ -7,6 +7,7 @@ import Favorites from './pages/Favorites';
 import Orders from './pages/Orders';
 import axios from 'axios';
 import AppContext from './context';
+import { getResource } from './api/db';
 
 
 const App = () => {
@@ -20,7 +21,10 @@ const App = () => {
 
 	const baseUrl = 'http://localhost:3002';
 
-	React.useEffect(() => {
+
+
+
+	useEffect(() => {
 		async function fetchData() {
 			const cartResponse = await axios.get(`${baseUrl}/cart`)
 			const favoritesResponse = await axios.get(`${baseUrl}/favorites`)
@@ -28,11 +32,14 @@ const App = () => {
 
 			setIsLoading(false);
 
+
+
 			setCartItems(cartResponse.data);
 			setFavorites(favoritesResponse.data);
 			setItems(itemsResponse.data);
 		}
 		fetchData();
+
 	}, [])
 
 
@@ -66,14 +73,14 @@ const App = () => {
 		setSearchValue(e.target.value)
 	}
 
-	const isItemAdded = (id) =>{
+	const isItemAdded = (id) => {
 		return cartItems.some((obj) => Number(obj.id) === Number(id))
 	}
 
 
 
 	return (
-		<AppContext.Provider value={{ items, cartItems, favorites, onAddToFavorite, isItemAdded, setCartOpened }}>
+		<AppContext.Provider value={{ items, cartItems, favorites, onAddToFavorite, isItemAdded, setCartOpened, setCartItems }}>
 			<div className="wrapper">
 
 				{cartOpened && <Drawer items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveItem} />}
